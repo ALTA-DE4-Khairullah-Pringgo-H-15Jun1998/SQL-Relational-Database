@@ -1,34 +1,105 @@
 1) Create database alta_online_shop.
-Sulisi SQL:
+Sulisi SQL: create database alta_online_shop;
 
 2) Dari schema Olshop yang telah kamu kerjakan di, Implementasikanlah menjadi table pada MySQL.
     2.a Create table user
-    Sulisi SQL:
+    Sulisi SQL: 
+    CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    alamat VARCHAR(255),
+    tanggal_lahir DATE,
+    status_user VARCHAR(20),
+    gender CHAR(1),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
     2.b Create table product, product_type, product_description, payment_method.
-    Sulisi SQL:
+    Sulisi SQL: 
+
+    CREATE TABLE product (
+    product_id serial PRIMARY KEY,
+    product varchar(100),
+    product_type int,
+    merk varchar(50),
+    payment_methods varchar(255)
+    );
+
+    CREATE TABLE product_type (
+    product_type_id serial PRIMARY KEY,
+    type_name varchar(100) NOT NULL
+    );
+
+    CREATE TABLE product_description (
+    description_id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL
+    );
+
+    CREATE TABLE payment_method (
+    payment_method_id SERIAL PRIMARY KEY,
+    method_name VARCHAR(100) NOT NULL,
+    description_id INT UNIQUE
+    );
 
     3.c Create table transaction, transaction detail.
-    Sulisi SQL:
+    Sulisi SQL: 
+    CREATE TABLE transaction (
+    transaction_id serial primary key,
+    customer_id int,
+    transaction_date timestamp default current_timestamp,
+    constraint fk_customer foreign key (customer_id) references users(user_id)
+    );
+
+    CREATE TABLE transaction_detail (
+    transaction_detail_id serial primary key,
+    transaction_id int,
+    product_id int,
+    quantity INT,
+    price DECIMAL(10, 2),
+    CONSTRAINT fk_transaction FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id),
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES product(product_id)
+    );
 
 3) Create table kurir dengan field id, name, created_at, updated_at.
-Sulisi SQL:
+    Sulisi SQL:
+    CREATE TABLE kurir (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
 
 4) Tambahkan ongkos_dasar column di tabel kurir.
-Sulisi SQL:
+    Sulisi SQL:
+    alter table kurir add column ongkos_dasar DECIMAL(10, 2);
 
 5) Rename tabel kurir menjadi shipping.
-Sulisi SQL:
+    Sulisi SQL:
+    alter table kurir rename to shipping;
 
 6) Hapus / Drop tabel shipping karena ternyata tidak dibutuhkan.
-Sulisi SQL:
+    Sulisi SQL:
+    drop table shipping;
 
 7) Silahkan menambahkan entity baru dengan relation 1-to-1, 1-to-many, many-to-many. Seperti:
     7.a) 1-to-1: payment_method dengan description.
     Sulisi SQL:
+    alter table payment_method add constraint fk_product_description 
+    foreign key (description_id) references product_description(description_id);
 
     7.b) 1-to-many: user dengan alamat.
     Sulisi SQL:
+    CREATE TABLE address (
+    address_id serial primary key,
+    user_id int references users(user_id),
+    alamat varchar(255)
+    );
 
     7.c) many-to-many: user dengan payment_method menjadi user_payment_method_detail.
     Sulisi SQL:
+    CREATE TABLE user_payment_method_detail (
+    user_id INT REFERENCES users(user_id),
+    payment_method_id INT REFERENCES payment_method(payment_method_id),
+    PRIMARY KEY (user_id, payment_method_id)
+    );
