@@ -83,7 +83,7 @@ Sulisi SQL: create database alta_online_shop;
     drop table shipping;
 
 7) Silahkan menambahkan entity baru dengan relation 1-to-1, 1-to-many, many-to-many. Seperti:
-    7.a) 1-to-1: payment_method dengan description.
+    7.a) 1-to-1: payment_method dengan product_description.
     Sulisi SQL:
     alter table payment_method add constraint fk_product_description 
     foreign key (description_id) references product_description(description_id);
